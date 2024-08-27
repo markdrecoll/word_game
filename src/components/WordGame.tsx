@@ -19,18 +19,21 @@ export default function WordGame({ secretWord, handleNewSecretWord }: WordGamePr
     const [showMessageToUser, setShowMessageToUser] = useState(false);
 
     const handleCloseModal = () => setShowModal(false);
-    const handleShowMessageToUser = () => setShowMessageToUser(true);
+    const handleShowMessageToUser = () => {
+        setShowMessageToUser(true);
+        setTimeout(() => setShowMessageToUser(false), 2000);
+    }
     const handleCloseToast = () => setShowMessageToUser(false);
 
     useEffect(() => {
         window.addEventListener("keyup", handleKeyup);
 
         if (isCorrect) {
-            setTimeout(() => setShowModal(true), 1000);
+            setTimeout(() => setShowModal(true), 750);
             window.removeEventListener('keyup', handleKeyup);
         }
         if (turn > 5) {
-            setTimeout(() => setShowModal(true), 1000);
+            setTimeout(() => setShowModal(true), 750);
             window.removeEventListener('keyup', handleKeyup);
         }
 
@@ -41,11 +44,10 @@ export default function WordGame({ secretWord, handleNewSecretWord }: WordGamePr
         if (showNotification) {
             handleShowMessageToUser();
         }
-    }, [showNotification])
+    }, [showNotification, notificationText])
 
     return (
         <>
-
             <Notification
                 variant={"dark"}
                 header={"Cannot make that move."}

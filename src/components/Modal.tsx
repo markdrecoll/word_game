@@ -19,6 +19,7 @@ export default function ResultsModal({
         resetModal();
         handleNewSecretWord();
         restartGame();
+        console.log("show state in modal", show);
     }
 
     return (

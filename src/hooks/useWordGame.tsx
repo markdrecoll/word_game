@@ -12,7 +12,7 @@ const useWordGame = (secretWord: string | null[]) => {
     const [guesses, setGuesses] = useState([...Array(6)]); // each guess is an array
     const [history, setHistory] = useState([""]); // each guess is a string
     const [isCorrect, setIsCorrect] = useState(false);
-    const [usedKeys, setUsedKeys] = useState({});
+    const [usedKeys, setUsedKeys] = useState([]);
     const [notificationText, setNotificationText] = useState("");
     const [showNotification, setShowNotification] = useState(false);
 
@@ -61,9 +61,9 @@ const useWordGame = (secretWord: string | null[]) => {
         setTurn(prevTurn => {
             return prevTurn + 1;
         })
-        setUsedKeys(prevUsedKeys => {
+        setUsedKeys(prevUsedKeys => { 
             formattedGuess.map(l => {
-                const currentColor: Array<LetterInfo> = prevUsedKeys[l.key];
+                const currentColor: any = prevUsedKeys[l.key as keyof typeof prevUsedKeys];
 
                 if (l.color === 'green') {
                     prevUsedKeys[l.key] = 'green';
@@ -122,6 +122,7 @@ const useWordGame = (secretWord: string | null[]) => {
             //     return;
             // }
 
+            console.log("showNotification state in hook", showNotification);
             const formatted: Array<LetterInfo> = formatGuess();
             addNewGuess(formatted);
         }
@@ -143,7 +144,7 @@ const useWordGame = (secretWord: string | null[]) => {
         setGuesses([...Array(6)]) // each guess is an array
         setHistory([]) // each guess is a string
         setIsCorrect(false);
-        setUsedKeys({});
+        setUsedKeys([]);
         setNotificationText("");
     }
 
