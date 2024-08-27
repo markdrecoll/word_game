@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 
 export default function Keypad({ keys, usedKeys }: any) {
-  const [letters, setLetters] = useState(null);
-//   const [letters, setLetters] = useState<any[]>([null]);
+  const [letters, setLetters] = useState<any[]>([]);
 
   useEffect(() => {
     setLetters(keys)
