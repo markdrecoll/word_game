@@ -1,6 +1,6 @@
 import WordGamePage from "./pages/WordGamePage"
 
-function App() {
+const App = () => {
   return (
     <>
       <WordGamePage />
@@ -8,4 +8,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

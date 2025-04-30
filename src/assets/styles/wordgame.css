@@ -1,26 +1,17 @@
-/* body {
-    text-align: center;
-    font-size: 1em;
-    font-family: verdana;
-    margin: 10%;
-} */
-
-h1.word-game {
-    font-size: 1.5em;
-    padding: 20px 0;
-    /* border-bottom: 1px solid #eee; */
-    margin: 0 0 0 0;
-    color: white;
-    text-decoration-color: whitesmoke;
+.default-site-main-div {
+    height: 100%;
+    min-height: 100vh;
+    background-color: #284052;
 }
 
-h3.word-game {
-    font-size: 1.2em;
-    padding: 0 0 20px 0;
-    border-bottom: 1px solid #eee;
-    margin: 0 0 30px 0;
+h1.word-game {
+    font-size: 1.4em;
     color: white;
-    text-decoration-color: whitesmoke;
+}
+
+p.word-game {
+    text-align: center;
+    color: white;
 }
 
 .wordGameRow {
@@ -126,20 +117,31 @@ h3.word-game {
 }
 
 .keypad {
-    max-width: 500px;
-    margin: 20px auto;
+    max-width: 100%;
+    margin: 5px auto;
+    padding-top: 2px;
+    text-align: center;
 }
 
 .keypad>div {
-    margin: 5px;
-    width: 40px;
+    margin: 3px;
+    width: 30px;
     height: 50px;
     background: lightgrey;
     display: inline-block;
     border-radius: 6px;
     line-height: 50px;
-    text-align:center;
+    text-align: center;
     color: black;
+
+    /* Make letters not highlightable and more like buttons */
+    cursor: pointer;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
 }
 
 .keypad>div.green {

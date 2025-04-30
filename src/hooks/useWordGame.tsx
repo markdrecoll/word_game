@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import WORD_LIST from "../constants/word_list.json"
+import { useState } from "react";
+import WORD_LIST from "../assets/data/word_list_large.json";
 
 interface LetterInfo {
     key: string,
@@ -16,26 +16,30 @@ const useWordGame = (secretWord: string | null[]) => {
     const [notificationText, setNotificationText] = useState("");
     const [showNotification, setShowNotification] = useState(false);
 
+    const handleKeyup = ({ key }: KeyboardEvent) => {
+        handleLetterInput(key);
+    }
+
     // format a guess into an array of letter objects 
-    // e.g. [{key: 'a', color: 'yellow'}]
+    // e.g. [{key: "a", color: "yellow"}]
     const formatGuess = () => {
         let secretWordArray = [...secretWord];
         let formattedGuess = [...currentGuess].map((l) => {
-            return { key: l, color: 'grey' };
+            return { key: l, color: "grey" };
         });
 
         // find any green letters
         formattedGuess.forEach((l, i) => {
             if (secretWord[i] === l.key) {
-                formattedGuess[i].color = 'green';
+                formattedGuess[i].color = "green";
                 secretWordArray[i] = null;
             }
         });
 
         // find any yellow letters
         formattedGuess.forEach((l, i) => {
-            if (secretWordArray.includes(l.key) && l.color !== 'green') {
-                formattedGuess[i].color = 'yellow';
+            if (secretWordArray.includes(l.key) && l.color !== "green") {
+                formattedGuess[i].color = "yellow";
                 secretWordArray[secretWordArray.indexOf(l.key)] = null;
             }
         });
@@ -61,88 +65,86 @@ const useWordGame = (secretWord: string | null[]) => {
         setTurn(prevTurn => {
             return prevTurn + 1;
         })
-        setUsedKeys(prevUsedKeys => { 
+        setUsedKeys(prevUsedKeys => {
             formattedGuess.map(l => {
                 const currentColor = prevUsedKeys[l.key];
 
-                if (l.color === 'green') {
-                    prevUsedKeys[l.key] = 'green';
+                if (l.color === "green") {
+                    prevUsedKeys[l.key] = "green";
                     return;
                 }
-                if (l.color === 'yellow' && currentColor !== 'green') {
-                    prevUsedKeys[l.key] = 'yellow';
+                if (l.color === "yellow" && currentColor !== "green") {
+                    prevUsedKeys[l.key] = "yellow";
                     return;
                 }
-                if (l.color === 'grey' && currentColor !== ('green' || 'yellow')) {
-                    prevUsedKeys[l.key] = 'grey';
+                if (l.color === "grey") {
+                    prevUsedKeys[l.key] = "grey";
                     return;
                 }
-            })
-
+            });
             return prevUsedKeys;
-        })
+        });
         setCurrentGuess("");
-
     }
 
-    // handle keyup event & track current guess
-    // if user presses enter, add the new guess
-    const handleKeyup = ({ key }: KeyboardEvent) => {
+    const handleLetterInput = (letter: string) => {
         let matchFound: Boolean = false;
-        if (key === 'Enter') {
+        if (letter === "Enter") {
 
-            // guess must be a word
+            // Check if guess is in dictionary
             for (let i = 0; i < WORD_LIST.length; i++) {
                 if (WORD_LIST[i].toUpperCase() === currentGuess) {
                     matchFound = true;
                 }
             }
-            if (matchFound !== true){
-                setNotificationText("That is not a word.");
+
+            // Alert user they cannot make a guess less than 5 letters
+            if (currentGuess.length !== 5) {
+                setNotificationText("Word must be 5 letters long.");
                 setShowNotification(true);
                 return;
             }
 
-            // only add guess if turn is less than 5
-            if (turn > 5) {
+            // Alert user their guess is not in the dictionary
+            if (matchFound !== true){
+                setNotificationText("Word not in dictionary.");
+                setShowNotification(true);
                 return;
             }
 
-            // do not allow duplicate words
+            // Alert user they cannot make a guess they already submitted
             if (history.includes(currentGuess)) {
                 setNotificationText("You already tried that word.");
                 setShowNotification(true);
                 return;
-            }
+            }  
 
-            // check if word is 5 characters
-            // if (currentGuess.length !== 5) {
-            //     setNotificationText("Word must be 5 letters long.");
-            //     setShowNotification(true);
-            //     return;
-            // }
+            // Don't allow more letters than 5
+            if (turn > 5) {
+                return;
+            }       
 
-            console.log("showNotification state in hook", showNotification);
             const formatted: Array<LetterInfo> = formatGuess();
             addNewGuess(formatted);
         }
-        if (key === 'Backspace') {
+        if (letter === "Backspace") {
             setCurrentGuess(prev => prev.slice(0, -1));
             return;
         }
-        if (/^[A-Za-z]$/.test(key)) {
+        if (/^[A-Za-z]$/.test(letter)) {
             if (currentGuess.length < 5) {
-                setCurrentGuess(prev => prev + key.toUpperCase());
+                setCurrentGuess(prev => prev + letter.toUpperCase());
             }
         }
+        setShowNotification(false);
     }
 
     // Reset the game board if the user wants to play another game.
     const handleNewGame = () => {
         setTurn(0);
         setCurrentGuess("");
-        setGuesses([...Array(6)]) // each guess is an array
-        setHistory([]) // each guess is a string
+        setGuesses([...Array(6)]); // each guess is an array
+        setHistory([]); // each guess is a string
         setIsCorrect(false);
         setUsedKeys({});
         setNotificationText("");
@@ -155,6 +157,7 @@ const useWordGame = (secretWord: string | null[]) => {
         isCorrect,
         usedKeys,
         handleKeyup,
+        handleLetterInput,
         handleNewGame,
         notificationText,
         showNotification
